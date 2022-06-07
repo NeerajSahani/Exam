@@ -1,0 +1,58 @@
+{% extends 'faculty/base.html' %}
+{% load static %}
+{% block title %}Login {% endblock %}
+{% block header %}
+    <style>
+        body {
+            background-image: url("{% static 'image/penguin.jpg' %}");
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            backdrop-filter: blur(12px);
+        }
+    </style>
+{% endblock %}
+{% block body %}
+    <div class="container">
+        <div class="row justify-content-center align-items-center" style="height:100vh">
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header bg-dark text-white">
+                        <h4 class="text-center">LOGIN</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="form-group form-inline">
+                                <div class="col-3">
+                                    <label for="id_username">Username</label>
+                                </div>
+                                <div class="col-9">
+                                    <input type="text" placeholder="username" class="form-control" name="username"
+                                           id="id_username" value="{{ username }}">
+                                </div>
+                            </div>
+
+                            <div class="form-group form-inline">
+                                <div class="col-3">
+                                    <label for="id_password"> Password </label>
+                                </div>
+                                <div class="col-9">
+                                    <input type="password" class="form-control" placeholder="password" name="password"
+                                           id="id_password">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-outline-warning">Login</button>
+                        </form>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{% url 'password_reset' %}">Forgot Password</a><br>
+                        Not registered yet <a href="{% url 'faculty:signup' %}">click here to register</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

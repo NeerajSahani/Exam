@@ -1,0 +1,182 @@
+{% extends 'faculty/base.html' %}
+{% load static %}
+{% load extra_filters %}
+{% block title %}Dashboard | {{ user }}{% endblock %}
+{% block body %}
+    <div class="page-wrapper chiller-theme toggled">
+        {% include 'module/navbar.html' %}
+        <main class="page-content">
+            <div class="container-fluid">
+                <h2>Faculty Dashboard</h2>
+                <hr>
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-header font-weight-bolder text-center"
+                                 style="background-color: goldenrod;">Exams
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-responsive  w-100 d-block d-md-table table-hover table-bordered font-weight-bold text-black-50">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Session</th>
+                                        <th>Date</th>
+                                        <th>Last Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for i in exam %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td><a href="{% url 'exam:exam-details' i.slug %}" class="card-link"
+                                                   data-toggle="tooltip" title="Open">{{ i.name }}</a></td>
+                                            <td>{{ i.start_date.year }}</td>
+                                            <td>{{ i.start_date }}</td>
+                                            <td>{{ i.end_date }}</td>
+                                            <td><span class="label label-info">{{ i.status }}</span></td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-header text-white-50 font-weight-bolder text-center"
+                                 style="background-color: #525965">Subjects
+                            </div>
+                            <div class="card-body">
+                                <div id="id_subject">
+                                    <ul class="list-group">
+                                        <a class="card-link" data-toggle="collapse" href="#thirdSem">
+                                            <li class="list-group-item list-group-item-action text-center">
+                                                <strong>Third Semester</strong>
+                                            </li>
+                                        </a>
+
+                                        <div id="thirdSem" class="collapse" data-parent="#id_subject">
+                                            {% for subject in subjects|semester:'3' %}
+                                                <li class="list-group-item rounded mb-1">
+                                                    {{ subject }}
+                                                </li>
+                                            {% empty %}
+                                                <li class="list-group-item rounded mb-1 mt-1 list-group-item-danger">
+                                                    Not Uploaded
+                                                </li>
+                                            {% endfor %}
+                                        </div>
+                                    </ul>
+                                    <ul class="list-group">
+                                        <a class="card-link collapsed" data-toggle="collapse" href="#fourthSem">
+                                            <li class="list-group-item list-group-item-action text-center">
+                                                <strong>Fourth Semester</strong>
+                                            </li>
+                                        </a>
+
+                                        <div id="fourthSem" class="collapse" data-parent="#id_subject">
+                                            {% for subject in subjects|semester:'4' %}
+                                                <li class="list-group-item rounded mb-1 mt-1">
+                                                    {{ subject }}
+                                                </li>
+                                            {% empty %}
+                                                <li class="list-group-item rounded mb-1 mt-1 list-group-item-danger">
+                                                    Not Uploaded
+                                                </li>
+                                            {% endfor %}
+                                        </div>
+                                    </ul>
+                                    <ul class="list-group">
+                                        <a class="card-link collapsed" data-toggle="collapse" href="#fifthSem">
+                                            <li class="list-group-item list-group-item-action text-center">
+                                                <strong>Fifth Semester</strong>
+                                            </li>
+                                        </a>
+
+                                        <div id="fifthSem" class="collapse" data-parent="#id_subject">
+                                            {% for subject in subjects|semester:'5' %}
+                                                <li class="list-group-item rounded mb-1 mt-1">
+                                                    {{ subject }}
+                                                </li>
+                                            {% empty %}
+                                                <li class="list-group-item rounded mb-1 mt-1 list-group-item-danger">
+                                                    Not Uploaded
+                                                </li>
+                                            {% endfor %}
+                                        </div>
+                                    </ul>
+
+                                    <ul class="list-group">
+                                        <a class="card-link collapsed" data-toggle="collapse" href="#sixthSem">
+                                            <li class="list-group-item list-group-item-action text-center">
+                                                <strong>Sixth Semester</strong>
+                                            </li>
+                                        </a>
+
+                                        <div id="sixthSem" class="collapse" data-parent="#id_subject">
+                                            {% for subject in subjects|semester:'6' %}
+                                                <li class="list-group-item rounded mb-1 mt-1">
+                                                    {{ subject }}
+                                                </li>
+                                            {% empty %}
+                                                <li class="list-group-item rounded mb-1 mt-1 list-group-item-danger">
+                                                    Not Uploaded
+                                                </li>
+                                            {% endfor %}
+                                        </div>
+                                    </ul>
+                                    <ul class="list-group">
+                                        <a class="card-link collapsed" data-toggle="collapse" href="#seventhSem">
+                                            <li class="list-group-item list-group-item-action text-center">
+                                                <strong>Seventh Semester</strong>
+                                            </li>
+                                        </a>
+
+                                        <div id="seventhSem" class="collapse" data-parent="#id_subject">
+                                            {% for subject in subjects|semester:'7' %}
+                                                <li class="list-group-item rounded mb-1 mt-1">
+                                                    {{ subject }}
+                                                </li>
+                                            {% empty %}
+                                                <li class="list-group-item rounded mb-1 mt-1 list-group-item-danger">
+                                                    Not Uploaded
+                                                </li>
+                                            {% endfor %}
+                                        </div>
+                                    </ul>
+                                    <ul class="list-group">
+                                        <a class="card-link collapsed" data-toggle="collapse" href="#EighthSem">
+                                            <li class="list-group-item list-group-item-action text-center">
+                                                <strong>Eighth Semester</strong>
+                                            </li>
+                                        </a>
+
+                                        <div id="EighthSem" class="collapse" data-parent="#id_subject">
+                                            {% for subject in subjects|semester:'8' %}
+                                                <li class="list-group-item rounded mb-1 mt-1">
+                                                    {{ subject }}
+                                                </li>
+                                            {% empty %}
+                                                <li class="list-group-item rounded mb-1 mt-1 list-group-item-danger">
+                                                    Not Uploaded
+                                                </li>
+                                            {% endfor %}
+                                        </div>
+                                    <a href="{% url 'exam:add-subject' %}?next={{ request.path|urlencode }}">
+                                        <li class="list-group-item mb-2 list-group-item-action text-center">
+                                            <strong>Add Subjects</strong>
+                                        </li>
+                                    </a>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+{% endblock %}

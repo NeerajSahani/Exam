@@ -1,0 +1,270 @@
+{% extends 'student/base.html' %}
+{% load static %}
+{% block title %}Dashboard| {{ user.get_full_name }}{% endblock %}
+{% block header %}
+    <link rel="stylesheet" href="{% static 'css/student.dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+{% endblock %}
+{% block body %}
+    <div class="page-wrapper chiller-theme toggled">
+        <a id="show-sidebar" class="btn btn-sm btn-dark" href="#"><i class="fas fa-bars"></i></a>
+        <nav id="sidebar" class="sidebar-wrapper">
+            <div class="sidebar-content">
+                <div class="sidebar-brand">
+                    <a href="#">KIPM - Online Examination System</a>
+                    <div id="close-sidebar">
+                        <i class="fas fa-times"></i>
+                    </div>
+                </div>
+
+                <div class="sidebar-header">
+                    <div class="user-pic">
+                        <img class="img-responsive img-rounded" src="{{ request.session.image }}" alt="User picture">
+                    </div>
+                    <div class="user-info">
+                        <span class="user-name">{{ user.first_name }} <strong>{{ user.last_name }}</strong></span>
+                        {% if user.designation %}
+                            <span class="user-role">{{ user.designation }} [{{ user.dept }}]</span>
+                        {% endif %}
+
+
+                        <span class="user-role">{{ user }}</span>
+                        <span class="user-status"><i class="fa fa-circle"></i><span>Online</span></span>
+
+                    </div>
+                </div>
+
+                <div class="sidebar-menu">
+                    <ul>
+                        <li class="header-menu">
+                            <span>General</span>
+                        </li>
+                        <li>
+                            <a href="{% url 'student:dashboard' user.username %}">
+                                <i class="fa fa-tachometer-alt"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            {% if papers %}
+                                <a href="{% url 'student:result-view' papers.first.exam.slug request.user.username %}"
+                                   data-toggle="tooltip"
+                                   title="{{ notification|length }} new results declared Check Menu">
+                                    <i class="fa fa-envelope"></i>
+                                    <span>Results</span>
+                                    <span class="badge badge-pill badge-danger">{{ notification|length }}</span>
+                                </a>{% endif %}
+                        </li>
+                        <li>
+                            <a href="{% url 'student:profile' student.username %}">
+                                <i class="far fa-user"></i>
+                                <span>Profile</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'password_change' %}">
+                                <i class="far fa-key"></i>
+                                <span>Change Password</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- sidebar-menu  -->
+            </div>
+            <!-- sidebar-content  -->
+            <div class="sidebar-footer">
+                <a href="/" id="id_notification">
+                    <i class="fa fa-bell"></i>
+                    <span class="badge badge-pill badge-warning notification" id="id_notification_bell">
+                        {{ messages|length }}
+                    </span>
+                </a>
+                <a href="{% url 'student:notification' %}" data-toggle="tooltip"
+                   title="{{ notification|length }} new results declared Check Menu">
+                    <i class="fa fa-envelope"></i>
+                    <span class="badge badge-pill badge-success notification">{{ notification|length }}</span>
+                </a>
+                <a href="{% url 'student:profile' user.username %}">
+                    <i class="fa fa-cog"></i>
+                    <span class="badge-sonar"></span>
+                </a>
+                <a href="{% url 'student:logout' %}"
+                   data-toggle="tooltip" title="logout">
+                    <i class="fa fa-power-off"></i>
+                </a>
+            </div>
+        </nav>
+        <main class="page-content">
+            <div class="container-fluid">
+                <h2>Student Dashboard</h2>
+                <hr>
+                <div class="row">
+                    <div class="col">
+                        <div class="card-header text-black-50 text-center bg-light mb-4">
+                            <div class="h4">
+                                {% if papers %}{{ papers.first.exam }}{% else %}NO Exams are pending{% endif %}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-header font-weight-bolder text-center">Papers</div>
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item list-group-item-danger mb-2">
+                                        <div class="text-black-50 font-weight-bold">
+                                            Click over exams to submit responses
+                                            <strong>One time submission is allowed</strong>
+                                        </div>
+                                    </li>
+                                    {% for paper in papers %}
+                                        <a href="{% url 'exam:exam-appear' qp_id=paper.id user_id=user.username %}"
+                                           onclick="return start(this, '{{ paper.subject.name }}', {{ paper.duration.seconds }});">
+                                            <li class="list-group-item mb-2 list-group-item-{% cycle 'info' 'success' 'warning' 'primary' %}">
+                                                {{ paper.subject }} - <strong>{{paper.datetime}}</strong>
+                                            </li>
+                                        </a>
+                                    {% empty %}
+                                        <li class="list-group-item mb-2 list-group-item-danger">
+                                            <strong> Not Available </strong>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-header text-white-50 font-weight-bolder text-center"
+                                 style="background-color: #525965">Subjects
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    {% for subject in subjects %}
+                                        <li class="list-group-item mb-2 list-group-item-{% cycle 'info' 'success' 'warning' 'primary' %}">
+                                            {{ subject }}
+                                        </li>
+                                    {% empty %}
+                                        <li class="list-group-item mb-2 list-group-item-danger">
+                                            <strong> Not Selected </strong>
+                                        </li>
+                                    {% endfor %}
+                                    <a>
+                                        <li class="list-group-item list-group-item-action text-center">
+                                            <form method="post">
+                                                {% csrf_token %}
+                                                <input class="form-control" name="subject_code" id="subject_input"
+                                                       placeholder="Name or Code">
+                                                <input class="form-control btn btn-sm btn-outline-dark mt-1" type="submit"
+                                                       value="add">
+                                            </form>
+                                        </li>
+                                    </a>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!-- page-content" -->
+
+    </div>
+    <script>
+        function start(triggeringLink, title, time) {
+            if (confirm('Are you ready ?')) {
+                href = triggeringLink.href;
+                var win = window.open(href, title, 'minimizable=no, toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=no, fullscreen=yes width=' + screen.availWidth + ',height=' + screen.availHeight);
+                win.focus();
+                win.setTimeout(function () {
+                    win.close();
+                }, time * 1000);
+            }
+            return false;
+        }
+    </script>
+    <script>
+        jQuery(function ($) {
+
+            $(".sidebar-dropdown > a").click(function () {
+                $(".sidebar-submenu").slideUp(200);
+                if (
+                    $(this)
+                        .parent()
+                        .hasClass("active")
+                ) {
+                    $(".sidebar-dropdown").removeClass("active");
+                    $(this)
+                        .parent()
+                        .removeClass("active");
+                } else {
+                    $(".sidebar-dropdown").removeClass("active");
+                    $(this)
+                        .next(".sidebar-submenu")
+                        .slideDown(200);
+                    $(this)
+                        .parent()
+                        .addClass("active");
+                }
+            });
+
+            $("#close-sidebar").click(function () {
+                $(".page-wrapper").removeClass("toggled");
+            });
+            $("#show-sidebar").click(function () {
+                $(".page-wrapper").addClass("toggled");
+            });
+
+
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#id_notification').click(function (event) {
+                event.preventDefault();
+                let msg_count = {{ messages|length }}
+                    {% for message in messages %}
+                        alert("{{ message }}");
+                        msg_count = msg_count - 1;
+                        $('#id_notification_bell').html(msg_count);
+                    {% empty %}
+                        alert('Empty');
+                    {% endfor %}
+
+            })
+        });
+    </script>
+    <script>
+        if ($(window).width() < 630) {
+            $(".page-wrapper").removeClass("toggled");
+        }
+    </script>
+    <script rel="script" src="{% static 'js/jquery-ui.js' %}"></script>
+    <script>
+        $("#subject_input").keyup(function () {
+            const key = $(this).val();
+            console.log(key);
+            $.ajax({
+                url: '{% url 'exam:ajax-subject-list' %}',
+                data: {
+                    'keyword': key
+                },
+                dataType: 'json',
+                success: function (data) {
+                    $('#subject_input').autocomplete({
+                        source: function (request, response) {
+                            response($.map(data.data, function (value, key) {
+                                return {
+                                    label: value.name+' - '+value.code,
+                                    value: value.code,
+                                }
+                            }));
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+{% endblock %}
